@@ -1,5 +1,5 @@
 # fake-sftp-upload
-##Usage:
+## Usage:
 ```
   -c int
         count (default 10)
