@@ -94,13 +94,13 @@ func FakeUpload(src, desPath string, count int) error {
 	fmt.Println("(" + time.Now().In(loc).Format("2006-1-2 15:4:5") + ") " + "fake upload starting...\n")
 	copiedMegaBytes = 0
 	for i := 0; i < count; i++ {
-		fmt.Print("\033[1A\033[K")
-		percent := float32(i+1) / float32(count) * 100
-		fmt.Printf("%f%%: %f Megabyte copied\n", percent, copiedMegaBytes)
 		err := CopyAndRemove(src, desPath)
 		if err != nil {
 			return err
 		}
+		fmt.Print("\033[1A\033[K")
+		percent := float32(i+1) / float32(count) * 100
+		fmt.Printf("%f%%: %f Megabyte copied\n", percent, copiedMegaBytes)
 	}
 	fmt.Print("\033[1A\033[K")
 	fmt.Printf("%f%%: %f Megabyte copied\n", 100.0, copiedMegaBytes)
