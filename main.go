@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/go-co-op/gocron"
@@ -94,7 +95,7 @@ func FakeUpload(src, desPath string, count int) error {
 	copiedMegaBytes = 0
 	for i := 0; i < count; i++ {
 		fmt.Print("\033[1A\033[K")
-		percent := float32(i) / float32(count) * 100
+		percent := float32(i+1) / float32(count) * 100
 		fmt.Printf("%f%%: %f Megabyte copied\n", percent, copiedMegaBytes)
 		err := CopyAndRemove(src, desPath)
 		if err != nil {
@@ -134,10 +135,17 @@ func main() {
 	}
 
 	s := gocron.NewScheduler(loc)
-	job, err := s.Every(1).Day().At(*times).Do(FakeUpload, *src, *desPath, *count)
-	if err != nil {
-		log.Fatal(err)
+	if strings.Contains(*times, ":") {
+		_, err := s.Every(1).Day().At(*times).Do(FakeUpload, *src, *desPath, *count)
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		_, err := s.Every(*times).Do(FakeUpload, *src, *desPath, *count)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
-	fmt.Println("Scheduled at: " + job.ScheduledAtTime())
+
 	s.StartBlocking()
 }
